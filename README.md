@@ -10,7 +10,7 @@ A sintáxe foi retirada do projeto [Portugol-Webstudio](https://github.com/dgade
 
 ## ✨ Sobre o Projeto
 
-Este projeto busca implementar um interpretador para uma linguagem similar ao **Portugol**, frequentemente usada para introduzir lógica de programação em cursos introdutórios. A ideia é criar uma ferramenta didática que simule a execução de programas simples escritos em pseudocódigo.
+Este projeto busca implementar um interpretador para uma linguagem similar ao **Portugol**, frequentemente usada para introduzir lógica de programação em cursos introdutórios. A ideia é criar uma ferramenta simples e direta, consertando erros de outros interpretadores.
 
 ---
 
