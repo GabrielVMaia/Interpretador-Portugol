@@ -53,16 +53,38 @@ AST_T* parser_parse_variable_definition(parser_T* parser)
   return variable_definition;
 }
 
+
+// TODO MELHORAR ISSO
+int isReserved(const char* value)
+{
+    
+    static const char* reservedTypes[] = {"inteiro", "real", "logico", "cadeia"};
+
+    int count = sizeof(reservedTypes) / sizeof(reservedTypes[0]);
+
+    for (int i = 0; i < count; i++)
+    {
+        if (strcmp(value, reservedTypes[i]) == 0)
+            return 1;
+    }
+    return 0;
+}
+
 AST_T* parser_parse_id(parser_T* parser)
 {
-  // inteiro nome = valor 
-  // func in TODO  list
+
+  /*
   if (strcmp(parser->current_token->value, "inteiro") == 0)
   {
     return parser_parse_variable_definition(parser);
   } else {
     return parser_parse_variable(parser);
   }
+  */ 
+  if (isReserved(parser->current_token->value))
+    return parser_parse_variable_definition(parser);
+  else 
+    return parser_parse_variable(parser);
 }
 
 void parser_eat(parser_T* parser, int token_type)
@@ -120,6 +142,7 @@ AST_T* parser_parse_statements(parser_T* parser)
 
   return compound;
 }
+
 AST_T* parser_parse_expr(parser_T* parser)
 {
 
@@ -136,10 +159,23 @@ AST_T* parser_parse_function_call(parser_T* parser)
 {
 
 }
+
 AST_T* parser_parse_variable(parser_T* parser)
 {
+  char* token_value = parser->current_token->value;
+  // esperamos o nome da variavel ou nome da função
+  parser_eat(parser, TOKEN_ID);
+
+  // caso o nosso token for um parenteses, vamos parsear como função
+  if (parser->current_token->type == TOKEN_LPAREN)
+    return parser_parse_function_call(parser);
+  
+  AST_T* ast_variable = init_ast(AST_VARIABLE);
+  ast_variable->variable_name = token_value;
+
 
 }
+
 AST_T* parser_parse_string(parser_T* parser)
 {
 
