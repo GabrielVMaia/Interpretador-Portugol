@@ -4,9 +4,7 @@
 #include <string.h>
 
 // TODO LIST
-// - Consertar o parsing de variaveis 
 // - Fazer funções incompletas
-
 
 parser_T* init_parser(lexer_T* lexer)
 {
@@ -20,17 +18,26 @@ parser_T* init_parser(lexer_T* lexer)
 AST_T* parser_parse_variable_definition(parser_T* parser)
 {
   // tipo nome = valor 
+  // inteiro numero = 10
 
-  parser_eat(parser, TOKEN_ID); // var  
-  char* variable_definition_variable_name = parser->current_token->value;
-
+  // pegamos o TIPO da variavel 
+  char* variable_type = parser->current_token->value;
   parser_eat(parser, TOKEN_ID);
+
+  // comemos o NOME IDENTIFICADOR da variavel 
+  char* variable_name = parser->current_token->value; 
+  parser_eat(parser, TOKEN_ID);
+
+  // come o "="
   parser_eat(parser, TOKEN_EQUALS);
 
+  // parsea o valor 
   AST_T* variable_value = parser_parse_expr(parser);
 
+  // Declaramos a definição da variavel e então retornamos ela 
+  
   AST_T* variable_definition = init_ast(AST_VARIABLE_DEFINITION);
-  variable_definition->variable_definition_varname = variable_definition_variable_name;
+  variable_definition->variable_definition_varname;
   variable_definition->variable_definition_value = variable_value;
 
   return variable_definition;
