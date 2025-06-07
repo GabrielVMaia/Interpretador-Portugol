@@ -25,6 +25,7 @@ AST_T* init_ast(int type)
     ast->compound_value = NULL;
     ast->compound_size = 0;
 
+
     return ast;
 }
 

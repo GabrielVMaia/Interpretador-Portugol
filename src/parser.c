@@ -11,12 +11,17 @@
 
 parser_T* init_parser(lexer_T* lexer)
 {
-  parser_T* parser = calloc(1, sizeof(struct PARSER_STRUCT));
-  parser->lexer = lexer;
-  parser->current_token = lexer_get_next_token(lexer);
-  
-  return parser;
-};
+    parser_T* parser = calloc(1, sizeof(struct PARSER_STRUCT));
+    parser->lexer = lexer;
+    parser->current_token = lexer_get_next_token(lexer);
+
+    printf("[DEBUG] Primeiro token: '%s' (tipo %d)\n",
+           parser->current_token->value,
+           parser->current_token->type);
+
+    return parser;
+}
+
 
 AST_T* parser_parse_variable_definition(parser_T* parser)
 {
@@ -47,7 +52,7 @@ AST_T* parser_parse_variable_definition(parser_T* parser)
   // Declaramos a definição da variavel e então retornamos ela 
   
   AST_T* variable_definition = init_ast(AST_VARIABLE_DEFINITION);
-  variable_definition->variable_definition_varname;
+  variable_definition->variable_definition_varname = variable_name;
   variable_definition->variable_definition_value = variable_value;
 
   return variable_definition;
@@ -81,10 +86,13 @@ AST_T* parser_parse_id(parser_T* parser)
     return parser_parse_variable(parser);
   }
   */ 
-  if (isReserved(parser->current_token->value))
+  if (isReserved(parser->current_token->value)) {
+    printf("[PARSER] Parseando variable definition\n");
     return parser_parse_variable_definition(parser);
-  else 
+  } else { 
+    printf("[Parser] Parseando variable\n");
     return parser_parse_variable(parser);
+  }
 }
 
 void parser_eat(parser_T* parser, int token_type)
@@ -103,50 +111,80 @@ void parser_eat(parser_T* parser, int token_type)
   }
 }
 
+AST_T* parser_parse_programa(parser_T* parser)
+{
+    parser_eat(parser, TOKEN_ID); // "programa"
+    parser_eat(parser, TOKEN_OPENINGBRACKET); // "{"
+
+    AST_T* body = parser_parse_statements(parser);
+
+    parser_eat(parser, TOKEN_CLOSINGBRACKET); // "}"
+
+    AST_T* programa_node = init_ast(AST_PROGRAMA);
+    programa_node->body = body;
+
+    return programa_node;
+}
+
 AST_T* parser_parse(parser_T* parser)
 {
-  return parser_parse_statements(parser);
+    if (strcmp(parser->current_token->value, "programa") == 0)
+        return parser_parse_programa(parser);
+
+    printf("Erro: programa deve começar com 'programa'\n");
+    exit(1);
 }
+
 
 AST_T* parser_parse_statement(parser_T* parser)
 {
   switch (parser->current_token->type) 
   {
     case TOKEN_ID: return parser_parse_id(parser);
+    default: return NULL;
   }
 }
+
+
 AST_T* parser_parse_statements(parser_T* parser)
 {
-  AST_T* compound = init_ast(AST_COMPOUND);
-  compound->compound_value = calloc(1, sizeof(struct AST_STRUCT*));
-  
+    AST_T* compound = init_ast(AST_COMPOUND);
+    compound->compound_value = calloc(1, sizeof(struct AST_STRUCT*));
+    compound->compound_size = 0;
 
-  AST_T* ast_statement = parser_parse_statement(parser);
-  compound->compound_value[0] = ast_statement;
+    while (
+        parser->current_token->type != TOKEN_CLOSINGBRACKET &&
+        parser->current_token->type != TOKEN_END
+    )
+    {
+        AST_T* statement = parser_parse_statement(parser);
+        if (!statement)
+            break;
 
+        compound->compound_size += 1;
+        compound->compound_value = realloc(
+            compound->compound_value,
+            compound->compound_size * sizeof(struct AST_STRUCT*)
+        );
 
-  while (parser->current_token->type == TOKEN_OPENINGBRACKET)
-  { 
-    parser_eat(parser, TOKEN_OPENINGBRACKET);
+        compound->compound_value[compound->compound_size - 1] = statement;
+    }
 
-    AST_T* ast_statement = parser_parse_statement(parser);
-    compound->compound_size += 1;
-    compound->compound_value = realloc(
-        compound->compound_value, 
-        compound->compound_size * sizeof(struct AST_STRUCT*)
-    );
-    compound->compound_value[compound->compound_size - 1] = ast_statement;
-
-  
-  }
-
-  return compound;
+    return compound;
 }
 
 AST_T* parser_parse_expr(parser_T* parser)
 {
+  printf("%s\n", parser->current_token->value);
+  switch(parser->current_token->type)
+  {
+    case TOKEN_STRING: return parser_parse_string(parser);
+  }
 
+  printf("Erro: expressão inesperada `%s`\n", parser->current_token->value);
+  exit(1);
 }
+
 AST_T* parser_parse_factor(parser_T* parser)
 {
 
@@ -173,11 +211,15 @@ AST_T* parser_parse_variable(parser_T* parser)
   AST_T* ast_variable = init_ast(AST_VARIABLE);
   ast_variable->variable_name = token_value;
 
-
+  return ast_variable;
 }
 
 AST_T* parser_parse_string(parser_T* parser)
 {
+  AST_T* ast_string = init_ast(AST_STRING);
+  ast_string->string_value = parser->current_token->value;
 
+  parser_eat(parser, TOKEN_STRING);
+  return ast_string;
 }
 

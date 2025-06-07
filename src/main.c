@@ -1,19 +1,27 @@
 #include <stdio.h>
 #include "include/lexer.h"
+#include "include/parser.h"
 
 int main(int argc, char* argv[])
 {
-  lexer_T* lexer = init_lexer(
-  
-      "escreva(\"Olá mundo!\")\nescreva(\"Tchau, mundo!\")\n"
-      );
+    lexer_T* lexer = init_lexer( 
+        "programa { cadeia nome = \"John lennon\"\n escreva(nome) }"
+    );
 
-  token_T* token = (void*)0;
+    parser_T* parser = init_parser(lexer);
+    AST_T* root = parser_parse(parser);
 
-  while ((token = lexer_get_next_token(lexer)) != NULL)
-  {
-    printf("TOKEN(%d, %s)\n", token->type, token->value);
+    if (root->type == AST_PROGRAMA) {
+        printf("Root type -> AST_PROGRAMA (%d)\n", root->type);
 
-  }
-  return 0;
+        if (root->body && root->body->type == AST_COMPOUND) {
+            printf("Compound block size -> %lu\n", root->body->compound_size);
+        } else {
+            printf("Erro: programa.body não é um bloco composto\n");
+        }
+    } else {
+        printf("Erro: AST raiz não é do tipo AST_PROGRAMA\n");
+    }
+
+    return 0;
 }
