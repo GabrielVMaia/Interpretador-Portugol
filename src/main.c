@@ -5,7 +5,7 @@ int main(int argc, char* argv[])
 {
   lexer_T* lexer = init_lexer(
   
-      "escreva(\"Olá mundo!\")\n"
+      "escreva(\"Olá mundo!\")\nescreva(\"Tchau, mundo!\")\n"
       );
 
   token_T* token = (void*)0;
