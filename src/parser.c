@@ -86,13 +86,16 @@ AST_T* parser_parse_id(parser_T* parser)
     return parser_parse_variable(parser);
   }
   */ 
+
   if (isReserved(parser->current_token->value)) {
-    printf("[PARSER] Parseando variable definition\n");
+    printf("[PARSER] Parseando tipo reservado\n");
     return parser_parse_variable_definition(parser);
   } else { 
-    printf("[Parser] Parseando variable\n");
+    printf("[Parser] Parseando algo que não é reservado\n");
+
     return parser_parse_variable(parser);
   }
+
 }
 
 void parser_eat(parser_T* parser, int token_type)

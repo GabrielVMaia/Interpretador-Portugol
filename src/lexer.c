@@ -46,6 +46,8 @@ char* lexer_get_current_char_as_string(lexer_T* lexer)
 
 token_T* lexer_collect_string(lexer_T* lexer)
 {
+  lexer_advance(lexer);
+
   char* value = calloc(1, sizeof(char));
   value[0] = '\0';
   while (lexer->currentChar != '"')
