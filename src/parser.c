@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define DEBUG 1
+
+
 // TODO LIST
 // - Fazer funções incompletas
 
@@ -33,6 +36,13 @@ AST_T* parser_parse_variable_definition(parser_T* parser)
 
   // parsea o valor 
   AST_T* variable_value = parser_parse_expr(parser);
+
+  #ifdef DEBUG
+    printf("[PARSER - variable_definition] type: %s, name: %s, value: ", variable_type, variable_name);
+    ast_print(variable_value);
+    printf("\n");
+  #endif /* ifdef DEBUG */
+
 
   // Declaramos a definição da variavel e então retornamos ela 
   

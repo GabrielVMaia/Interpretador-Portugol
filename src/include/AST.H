@@ -36,4 +36,5 @@ typedef struct AST_STRUCT
 
 AST_T* init_ast(int type);
 
+void ast_print(AST_T* ast);
 #endif // !AST_H
