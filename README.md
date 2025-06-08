@@ -17,7 +17,7 @@ Este projeto busca implementar um interpretador para uma linguagem similar ao **
 ## 🚀 Funcionalidades (até agora)
 
 - [x] Lexer
-- [ ] Parser
+- [x] Parser (em andamento)
 - [ ] Visitor
 - [ ] Leitura de arquivos
 - [ ] Definição de funções
