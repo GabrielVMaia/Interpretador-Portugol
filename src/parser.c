@@ -15,10 +15,6 @@ parser_T* init_parser(lexer_T* lexer)
     parser->lexer = lexer;
     parser->current_token = lexer_get_next_token(lexer);
 
-    printf("[DEBUG] Primeiro token: '%s' (tipo %d)\n",
-           parser->current_token->value,
-           parser->current_token->type);
-
     return parser;
 }
 
@@ -88,11 +84,8 @@ AST_T* parser_parse_id(parser_T* parser)
   */ 
 
   if (isReserved(parser->current_token->value)) {
-    printf("[PARSER] Parseando tipo reservado\n");
     return parser_parse_variable_definition(parser);
   } else { 
-    printf("[Parser] Parseando algo que não é reservado\n");
-
     return parser_parse_variable(parser);
   }
 
@@ -102,6 +95,7 @@ void parser_eat(parser_T* parser, int token_type)
 {
   if(parser->current_token->type == token_type)
   {
+    printf("[parser_eat - current_token] %s\n", parser->current_token->value);
     parser->current_token = lexer_get_next_token(parser->lexer);
   } else {
     printf(
@@ -113,20 +107,40 @@ void parser_eat(parser_T* parser, int token_type)
 
   }
 }
+// Função para pegar a "funcao inicio()"
+AST_T* parser_parse_entrypoint(parser_T* parser)
+{
+  // Aqui, já esperamos ter um node "programa" feito.
+  printf("[DEBUG] Encontrando entrypoint");
+  parser_eat(parser, TOKEN_FUNC); // "funcao"
+  parser_eat(parser, TOKEN_ENTRY); // "inicio"
+  
+  // skipa os () 
+  lexer_advance(parser->lexer);
+  lexer_advance(parser->lexer);
+
+  parser_eat(parser, TOKEN_OPENINGBRACKET); // "{"
+
+  AST_T* entryPoint_Body = parser_parse_statements(parser);
+
+
+  parser_eat(parser, TOKEN_CLOSINGBRACKET); // "{"
+  AST_T* entrypoint_node = init_ast(AST_INICIO);
+  entrypoint_node->entryBody = entryPoint_Body;
+
+  return entrypoint_node;
+}
 
 AST_T* parser_parse_programa(parser_T* parser)
 {
-    parser_eat(parser, TOKEN_ID); // "programa"
+    parser_eat(parser, TOKEN_PROGRAMA); // "programa"
     parser_eat(parser, TOKEN_OPENINGBRACKET); // "{"
 
-    AST_T* body = parser_parse_statements(parser);
+    parser_parse_statements(parser);
 
     parser_eat(parser, TOKEN_CLOSINGBRACKET); // "}"
 
-    AST_T* programa_node = init_ast(AST_PROGRAMA);
-    programa_node->body = body;
-
-    return programa_node;
+    return parser_parse_entrypoint(parser);
 }
 
 AST_T* parser_parse(parser_T* parser)
@@ -144,6 +158,7 @@ AST_T* parser_parse_statement(parser_T* parser)
   switch (parser->current_token->type) 
   {
     case TOKEN_ID: return parser_parse_id(parser);
+    case TOKEN_FUNC: return parser_parse_entrypoint(parser);
     default: return NULL;
   }
 }
@@ -178,7 +193,6 @@ AST_T* parser_parse_statements(parser_T* parser)
 
 AST_T* parser_parse_expr(parser_T* parser)
 {
-  printf("%s\n", parser->current_token->value);
   switch(parser->current_token->type)
   {
     case TOKEN_STRING: return parser_parse_string(parser);

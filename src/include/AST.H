@@ -11,7 +11,8 @@ typedef struct AST_STRUCT
     AST_VARIABLE,
     AST_STRING,
     AST_COMPOUND,
-    AST_PROGRAMA
+    AST_PROGRAMA,
+    AST_INICIO
   } type;
 
   /* AST_VARIABLE_DEFINITION */ 
@@ -35,6 +36,9 @@ typedef struct AST_STRUCT
 
   /* AST_PROGRAMA */  
   struct AST_STRUCT* body;
+
+  /* AST_INICIO */  
+  struct AST_STRUCT* entryBody;
 
 } AST_T;
 

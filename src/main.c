@@ -4,8 +4,14 @@
 
 int main(int argc, char* argv[])
 {
+
+  // programa {
+  // funcao inicio() {
+    // escreva("Olá, mundo!")
+ //  }
+// }
     lexer_T* lexer = init_lexer( 
-        "programa { cadeia nome = \"John lennon\"\n escreva(nome) }"
+        "programa {\n funcao inicio() { \n cadeia nome = \"John lennon\"\n escreva(nome) \n}\n }"
     );
 
     parser_T* parser = init_parser(lexer);

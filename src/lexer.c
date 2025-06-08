@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdio.h>
 
 lexer_T* init_lexer(char* contents)
 {
@@ -78,7 +79,15 @@ token_T* lexer_collect_id(lexer_T* lexer)
     lexer_advance(lexer);
   }
 
-  return init_token(TOKEN_ID, value);
+  token_T* token;
+
+  if (strcmp(value, "funcao") == 0) token = init_token(TOKEN_FUNC, value);
+  else if (strcmp(value, "programa") == 0) token = init_token(TOKEN_PROGRAMA, value);
+  else if (strcmp(value, "inicio") == 0) token = init_token(TOKEN_ENTRY, value);
+  else token = init_token(TOKEN_ID, value);
+
+  printf("[lexer_collect_id] Criado token %s (type=%d)\n", token->value, token->type);
+  return token;
 }
 
 token_T* lexer_get_next_token(lexer_T* lexer)
