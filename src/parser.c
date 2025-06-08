@@ -111,13 +111,13 @@ void parser_eat(parser_T* parser, int token_type)
 AST_T* parser_parse_entrypoint(parser_T* parser)
 {
   // Aqui, já esperamos ter um node "programa" feito.
-  printf("[DEBUG] Encontrando entrypoint");
+  printf("[DEBUG] Encontrando entrypoint\n");
   parser_eat(parser, TOKEN_FUNC); // "funcao"
   parser_eat(parser, TOKEN_ENTRY); // "inicio"
   
   // skipa os () 
-  lexer_advance(parser->lexer);
-  lexer_advance(parser->lexer);
+  parser_eat(parser, TOKEN_LPAREN);
+  parser_eat(parser, TOKEN_RPAREN);
 
   parser_eat(parser, TOKEN_OPENINGBRACKET); // "{"
 
