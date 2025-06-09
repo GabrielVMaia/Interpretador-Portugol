@@ -83,7 +83,7 @@ token_T* lexer_collect_id(lexer_T* lexer)
 
   if (strcmp(value, "funcao") == 0) token = init_token(TOKEN_FUNC, value);
   else if (strcmp(value, "programa") == 0) token = init_token(TOKEN_PROGRAMA, value);
-  else if (strcmp(value, "inicio") == 0) token = init_token(TOKEN_ENTRY, value);
+  else if (strcmp(value, "inicio") == 0) token = init_token(TOKEN_ID, value);
   else token = init_token(TOKEN_ID, value);
 
   printf("[lexer_collect_id] Criado token %s (type=%d)\n", token->value, token->type);

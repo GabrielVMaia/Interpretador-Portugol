@@ -112,9 +112,9 @@ AST_T* parser_parse_entrypoint(parser_T* parser)
 {
   // Aqui, já esperamos ter um node "programa" feito.
   printf("[DEBUG] Encontrando entrypoint\n");
-  parser_eat(parser, TOKEN_FUNC); // "funcao"
-  parser_eat(parser, TOKEN_ENTRY); // "inicio"
-  
+  parser_eat(parser, TOKEN_FUNC);
+  // Parseamos para encontrar funções e entrypoint
+  parser_parse_variable(parser);
   // skipa os () 
   parser_eat(parser, TOKEN_LPAREN);
   parser_eat(parser, TOKEN_RPAREN);
@@ -212,7 +212,12 @@ AST_T* parser_parse_term(parser_T* parser)
 };
 AST_T* parser_parse_function_call(parser_T* parser)
 {
-
+  printf("[parser_parse_function_call - current_token] %s\n", parser->current_token->value); 
+  // Verificamos se é um entrypoint
+  if (strcmp(parser->current_token->value, "inico"))
+  {
+    printf("[DEBUG] entrypoint encontrado\n");
+  }
 }
 
 AST_T* parser_parse_variable(parser_T* parser)
@@ -221,13 +226,19 @@ AST_T* parser_parse_variable(parser_T* parser)
   // esperamos o nome da variavel ou nome da função
   parser_eat(parser, TOKEN_ID);
 
+  printf("[parser_parse_variable] parsing %s\n", parser->current_token->value);
+
   // caso o nosso token for um parenteses, vamos parsear como função
   if (parser->current_token->type == TOKEN_LPAREN)
+  {
+    printf("[parser_parse_string] parsing function, %s\n", parser->current_token->value);
     return parser_parse_function_call(parser);
+  }
   
   AST_T* ast_variable = init_ast(AST_VARIABLE);
   ast_variable->variable_name = token_value;
 
+  printf("[parser_parse_variable] done parsing ast_variable, %s\n", ast_variable->variable_name);
   return ast_variable;
 }
 
