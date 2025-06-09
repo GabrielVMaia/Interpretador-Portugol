@@ -99,9 +99,10 @@ void parser_eat(parser_T* parser, int token_type)
     parser->current_token = lexer_get_next_token(parser->lexer);
   } else {
     printf(
-        "Token não esperado `%s`, com o tipo %d",
+        "Token não esperado `%s`, com o tipo %d, se esperava %d",
         parser->current_token->value, 
-        parser->current_token->type
+        parser->current_token->type,
+        token_type
     );
     exit(1);
 
@@ -210,26 +211,45 @@ AST_T* parser_parse_term(parser_T* parser)
 {
 
 };
+
+
+// TODO ESSA BOMBA AQ
 AST_T* parser_parse_function_call(parser_T* parser)
 {
-  printf("[parser_parse_function_call - current_token] %s\n", parser->current_token->value); 
-  // Verificamos se é um entrypoint
-  if (strcmp(parser->current_token->value, "inico"))
-  {
-    printf("[DEBUG] entrypoint encontrado\n");
-  }
+  // funcao nome(args) { }
+  char* function_name = parser->current_token->value;
+  printf("[parser_parse_function_call] parsing function %s\n", function_name);
+  parser_eat(parser, TOKEN_ID);
+  // printf("[parser_parse_function_call - current_token] %s\n", parser->current_token->value); 
+
+// pulamos o primeiro ( 
+  parser_eat(parser, TOKEN_LPAREN);
+
+  /*
+    Começamos a pegar os argumentos da função 
+    char* function_call_name;
+    struct AST_STRUCT** function_call_arguments;
+    size_t function_call_arguments_size;
+  */
+
+  // Loopear até encontrar o )
+  AST_T* ast_function = init_ast(AST_FUNCTION_CALL);
+  ast_function->function_call_name = function_name;
 }
 
 AST_T* parser_parse_variable(parser_T* parser)
 {
   char* token_value = parser->current_token->value;
-  // esperamos o nome da variavel ou nome da função
-  parser_eat(parser, TOKEN_ID);
+  // verificamos se é o entry point tlg 
+  if(strcmp(token_value, "inicio") == 0)
+  {
+    printf("[DEBUG] encontrado entryPoint\n");
+  }
 
   printf("[parser_parse_variable] parsing %s\n", parser->current_token->value);
 
   // caso o nosso token for um parenteses, vamos parsear como função
-  if (parser->current_token->type == TOKEN_LPAREN)
+  if (parser->current_token->type == TOKEN_FUNC || strcmp(parser->current_token->value, "inicio") == 0)
   {
     printf("[parser_parse_string] parsing function, %s\n", parser->current_token->value);
     return parser_parse_function_call(parser);
