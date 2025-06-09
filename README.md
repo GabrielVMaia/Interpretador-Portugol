@@ -33,9 +33,9 @@ Eu utilizei esses materiais para entender e desenvolver o projeto, pensei que se
 - [x] Parser (em andamento)
 - [ ] Visitor
 - [ ] Leitura de arquivos
-- [ ] Definição de funções
+- [x] Definição de funções (em andamento)
 - [ ] Chamando funções
-- [ ] Definição de funções - Argumentos
+- [x] Definição de funções - Argumentos (em andamento)
 - [ ] Refatoração de variaveís 
 
 ---
