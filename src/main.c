@@ -1,22 +1,40 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "include/lexer.h"
 #include "include/parser.h"
 
 int main(int argc, char* argv[])
 {
+    const char *filepath = "../examples/hello_world.por";
 
-  // programa {
-  // funcao inicio() {
-    // escreva("Olá, mundo!")
- //  }
-// }
-    lexer_T* lexer = init_lexer( 
-        "programa {\n funcao inicio() { \n cadeia nome = \"John lennon\"\n escreva(nome) \n}\n }"
-    );
+    FILE *fp = fopen(filepath, "rb");
+    if (fp == NULL)
+    {
+        printf("[Main.c] Falha ao abrir arquivo\n");
+        return -1;
+    }
 
+    fseek(fp, 0, SEEK_END);
+    long fileSize = ftell(fp);
+    rewind(fp);
+
+    char *buffer = malloc(fileSize + 1);
+    if (buffer == NULL)
+    {
+        printf("[Main.c] Falha ao alocar memória\n");
+        fclose(fp);
+        return -1;
+    }
+
+    size_t read_size = fread(buffer, 1, fileSize, fp);
+    buffer[read_size] = '\0';
+    fclose(fp);
+
+    lexer_T* lexer = init_lexer(buffer);
     parser_T* parser = init_parser(lexer);
     AST_T* root = parser_parse(parser);
 
+    free(buffer); 
     if (root->type == AST_PROGRAMA) {
         printf("Root type -> AST_PROGRAMA (%d)\n", root->type);
 
