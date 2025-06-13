@@ -7,7 +7,7 @@
 
 int main(int argc, char* argv[])
 {
-    const char *filepath = "../examples/hello_world.por";
+    const char *filepath = "examples/hello_world.por";
 
     FILE *fp = fopen(filepath, "rb");
     if (fp == NULL)
