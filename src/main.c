@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 #include "include/lexer.h"
 #include "include/parser.h"
 
@@ -10,7 +12,7 @@ int main(int argc, char* argv[])
     FILE *fp = fopen(filepath, "rb");
     if (fp == NULL)
     {
-        printf("[Main.c] Falha ao abrir arquivo\n");
+        printf("[Main.c] Falha ao abrir arquivo: %s \n", strerror(errno));
         return -1;
     }
 
