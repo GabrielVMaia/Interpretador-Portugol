@@ -225,6 +225,10 @@ AST_T* parser_parse_function_call(parser_T* parser)
 // pulamos o primeiro ( 
   parser_eat(parser, TOKEN_LPAREN);
 
+  AST_T** function_arguments = NULL;
+  size_t argc;
+
+
   /*
     Começamos a pegar os argumentos da função 
     char* function_call_name;
@@ -233,8 +237,32 @@ AST_T* parser_parse_function_call(parser_T* parser)
   */
 
   // Loopear até encontrar o )
+
+  while(parser->current_token->type != TOKEN_RPAREN)
+  {
+    char* arg_value = parser->current_token->value;
+    AST_T* arg_ast = init_ast(AST_VARIABLE);
+    arg_ast->variable_name = arg_value;
+
+    function_arguments = realloc(function_arguments, sizeof(AST_T*) * (argc + 1));
+    function_arguments[argc++] = arg_ast;
+
+    parser_eat(parser, TOKEN_STRING);
+
+    if (parser->current_token->type != TOKEN_RPAREN)
+    {
+      printf("[parser_parse_function_call] erro de sintaxe");
+    }
+  }
+
+  parser_eat(parser, TOKEN_RPAREN);
+
   AST_T* ast_function = init_ast(AST_FUNCTION_CALL);
   ast_function->function_call_name = function_name;
+  ast_function->function_call_arguments = function_arguments;
+  ast_function->function_call_arguments_size = argc;
+
+  return ast_function;
 }
 
 AST_T* parser_parse_variable(parser_T* parser)
