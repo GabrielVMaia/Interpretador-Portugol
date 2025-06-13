@@ -32,7 +32,7 @@ Eu utilizei esses materiais para entender e desenvolver o projeto, pensei que se
 - [x] Lexer
 - [x] Parser (em andamento)
 - [ ] Visitor
-- [ ] Leitura de arquivos
+- [X] Leitura de arquivos
 - [x] Definição de funções (em andamento)
 - [ ] Chamando funções
 - [x] Definição de funções - Argumentos (em andamento)
