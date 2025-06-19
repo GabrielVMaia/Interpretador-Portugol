@@ -84,8 +84,10 @@ AST_T* parser_parse_id(parser_T* parser)
   */ 
 
   if (isReserved(parser->current_token->value)) {
+    printf("[parser_parse_id] parseando def variavel (reservado)\n");
     return parser_parse_variable_definition(parser);
   } else { 
+    printf("[parser_parse_id] parseando variavel nao reservada\n");
     return parser_parse_variable(parser);
   }
 
@@ -128,7 +130,7 @@ AST_T* parser_parse_entrypoint(parser_T* parser)
   parser_eat(parser, TOKEN_CLOSINGBRACKET); // "{"
   AST_T* entrypoint_node = init_ast(AST_INICIO);
   entrypoint_node->entryBody = entryPoint_Body;
-
+  printf("[DEBUG] Retornando node entrypoint\n");
   return entrypoint_node;
 }
 
@@ -213,56 +215,48 @@ AST_T* parser_parse_term(parser_T* parser)
 };
 
 
-// TODO ESSA BOMBA AQ
+// TODO ESSA BOMBA A
 AST_T* parser_parse_function_call(parser_T* parser)
 {
-  // funcao nome(args) { }
-  char* function_name = parser->current_token->value;
-  printf("[parser_parse_function_call] parsing function %s\n", function_name);
-  parser_eat(parser, TOKEN_ID);
-  // printf("[parser_parse_function_call - current_token] %s\n", parser->current_token->value); 
+    char* function_name = parser->current_token->value;
+    printf("[parser_parse_function_call] parsing function %s\n", function_name);
+    parser_eat(parser, TOKEN_ID);
+    parser_eat(parser, TOKEN_LPAREN);
 
-// pulamos o primeiro ( 
-  parser_eat(parser, TOKEN_LPAREN);
-
-  AST_T** function_arguments = NULL;
-  size_t argc;
-
-
-  /*
-    Começamos a pegar os argumentos da função 
-    char* function_call_name;
-    struct AST_STRUCT** function_call_arguments;
-    size_t function_call_arguments_size;
-  */
-
-  // Loopear até encontrar o )
-
-  while(parser->current_token->type != TOKEN_RPAREN)
-  {
-    char* arg_value = parser->current_token->value;
-    AST_T* arg_ast = init_ast(AST_VARIABLE);
-    arg_ast->variable_name = arg_value;
-
-    function_arguments = realloc(function_arguments, sizeof(AST_T*) * (argc + 1));
-    function_arguments[argc++] = arg_ast;
-
-    parser_eat(parser, TOKEN_STRING);
+    AST_T** function_arguments = NULL;
+    size_t argc = 0;
 
     if (parser->current_token->type != TOKEN_RPAREN)
     {
-      printf("[parser_parse_function_call] erro de sintaxe");
+        while (parser->current_token->type != TOKEN_RPAREN)
+        {
+            char* arg_value = parser->current_token->value;
+            AST_T* arg_ast = init_ast(AST_VARIABLE);
+            arg_ast->variable_name = arg_value;
+
+            function_arguments = realloc(function_arguments, sizeof(AST_T*) * (argc + 1));
+            function_arguments[argc++] = arg_ast;
+
+            parser_eat(parser, TOKEN_STRING);
+
+            if (parser->current_token->type != TOKEN_RPAREN)
+            {
+                printf("[parser_parse_function_call] erro de sintaxe");
+                exit(1); 
+            }
+        }
     }
-  }
 
-  parser_eat(parser, TOKEN_RPAREN);
+    parser_eat(parser, TOKEN_RPAREN);
 
-  AST_T* ast_function = init_ast(AST_FUNCTION_CALL);
-  ast_function->function_call_name = function_name;
-  ast_function->function_call_arguments = function_arguments;
-  ast_function->function_call_arguments_size = argc;
+    AST_T* ast_function = init_ast(AST_FUNCTION_CALL);
+    ast_function->function_call_name = function_name;
+    ast_function->function_call_arguments = function_arguments;
+    ast_function->function_call_arguments_size = argc;
 
-  return ast_function;
+    printf("[parser_parse_function_call] parsing da função %s acabou!\n", function_name);
+
+    return ast_function;
 }
 
 AST_T* parser_parse_variable(parser_T* parser)
