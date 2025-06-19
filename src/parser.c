@@ -113,25 +113,34 @@ void parser_eat(parser_T* parser, int token_type)
 // Função para pegar a "funcao inicio()"
 AST_T* parser_parse_entrypoint(parser_T* parser)
 {
-  // Aqui, já esperamos ter um node "programa" feito.
-  printf("[DEBUG] Encontrando entrypoint\n");
-  parser_eat(parser, TOKEN_FUNC);
-  // Parseamos para encontrar funções e entrypoint
-  parser_parse_variable(parser);
-  // skipa os () 
-  parser_eat(parser, TOKEN_LPAREN);
-  parser_eat(parser, TOKEN_RPAREN);
+    printf("[DEBUG] Encontrando entrypoint\n");
 
-  parser_eat(parser, TOKEN_OPENINGBRACKET); // "{"
+    parser_eat(parser, TOKEN_FUNC); // "funcao"
 
-  AST_T* entryPoint_Body = parser_parse_statements(parser);
+    // Come o nome da função: "inicio"
+    char* function_name = parser->current_token->value;
+    parser_eat(parser, TOKEN_ID);
 
+    if (strcmp(function_name, "inicio") != 0)
+    {
+        printf("Erro: nome da função principal deve ser 'inicio', encontrado '%s'\n", function_name);
+        exit(1);
+    }
 
-  parser_eat(parser, TOKEN_CLOSINGBRACKET); // "{"
-  AST_T* entrypoint_node = init_ast(AST_INICIO);
-  entrypoint_node->entryBody = entryPoint_Body;
-  printf("[DEBUG] Retornando node entrypoint\n");
-  return entrypoint_node;
+    parser_eat(parser, TOKEN_LPAREN);
+    parser_eat(parser, TOKEN_RPAREN);
+
+    parser_eat(parser, TOKEN_OPENINGBRACKET); // "{"
+
+    AST_T* entryPoint_Body = parser_parse_statements(parser);
+
+    parser_eat(parser, TOKEN_CLOSINGBRACKET); // "}"
+
+    AST_T* entrypoint_node = init_ast(AST_INICIO);
+    entrypoint_node->entryBody = entryPoint_Body;
+
+    printf("[DEBUG] Retornando node entrypoint\n");
+    return entrypoint_node;
 }
 
 AST_T* parser_parse_programa(parser_T* parser)
