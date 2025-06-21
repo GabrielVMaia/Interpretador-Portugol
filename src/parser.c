@@ -172,7 +172,10 @@ AST_T* parser_parse_statement(parser_T* parser)
   {
     case TOKEN_ID: return parser_parse_id(parser);
     case TOKEN_FUNC: return parser_parse_entrypoint(parser);
-    default: return NULL;
+    default:
+          printf("Erro: declaração inesperada com token '%s'\n", parser->current_token->value);
+          exit(1);
+
   }
 }
 
@@ -290,7 +293,9 @@ AST_T* parser_parse_variable(parser_T* parser)
   AST_T* ast_variable = init_ast(AST_VARIABLE);
   ast_variable->variable_name = token_value;
 
+  parser_eat(parser, TOKEN_ID);
   printf("[parser_parse_variable] done parsing ast_variable, %s\n", ast_variable->variable_name);
+ 
   return ast_variable;
 }
 
