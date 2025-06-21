@@ -111,6 +111,7 @@ void parser_eat(parser_T* parser, int token_type)
   }
 }
 // Função para pegar a "funcao inicio()"
+// TODO ainda
 AST_T* parser_parse_entrypoint(parser_T* parser)
 {
     printf("[DEBUG] Encontrando entrypoint\n");
