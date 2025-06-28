@@ -283,8 +283,10 @@ AST_T* parser_parse_variable(parser_T* parser)
 
   printf("[parser_parse_variable] parsing %s\n", parser->current_token->value);
 
+  parser_eat(parser, TOKEN_ID);
+  
   // caso o nosso token for um parenteses, vamos parsear como função
-  if (parser->current_token->type == TOKEN_FUNC || strcmp(parser->current_token->value, "inicio") == 0)
+  if (parser->current_token->type == TOKEN_RPAREN || strcmp(parser->current_token->value, "inicio") == 0)
   {
     printf("[parser_parse_string] parsing function, %s\n", parser->current_token->value);
     return parser_parse_function_call(parser);
