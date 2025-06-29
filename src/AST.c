@@ -21,6 +21,10 @@ AST_T* init_ast(int type)
     /* AST_STRING */
     ast->string_value = NULL;
 
+    /* AST_REAL */ 
+
+    ast->real_value = NULL;
+
     /* AST_COMPOUND */
     ast->compound_value = NULL;
     ast->compound_size = 0;

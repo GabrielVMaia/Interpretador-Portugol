@@ -18,9 +18,19 @@ parser_T* init_parser(lexer_T* lexer)
     return parser;
 }
 
+AST_T* parser_parse_real(parser_T* parser)
+{
+  AST_T* ast_real = init_ast(AST_REAL);
+
+  ast_real->real_value = parser->current_token->value;
+  parser_eat(parser, TOKEN_REAL);
+
+  return ast_real;
+}
 
 AST_T* parser_parse_variable_definition(parser_T* parser)
-{
+{ 
+  printf("[parser_parse_variable_definition] iniciando");
   // tipo nome = valor 
   // inteiro numero = 10
 
@@ -42,7 +52,7 @@ AST_T* parser_parse_variable_definition(parser_T* parser)
     printf("[PARSER - variable_definition] type: %s, name: %s, value: ", variable_type, variable_name);
     ast_print(variable_value);
     printf("\n");
-  #endif /* ifdef DEBUG */
+  #endif 
 
 
   // Declaramos a definição da variavel e então retornamos ela 
@@ -212,6 +222,7 @@ AST_T* parser_parse_expr(parser_T* parser)
   switch(parser->current_token->type)
   {
     case TOKEN_STRING: return parser_parse_string(parser);
+    case TOKEN_REAL: return parser_parse_real(parser);
   }
 
   printf("Erro: expressão inesperada `%s`\n", parser->current_token->value);
@@ -300,6 +311,7 @@ AST_T* parser_parse_variable(parser_T* parser)
  
   return ast_variable;
 }
+
 
 AST_T* parser_parse_string(parser_T* parser)
 {

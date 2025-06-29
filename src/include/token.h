@@ -10,6 +10,7 @@ typedef enum {
     TOKEN_PROGRAMA, // 4
     TOKEN_EQUALS, // 5
     TOKEN_STRING, // 6
+    TOKEN_REAL,
     TOKEN_LPAREN, // 7
     TOKEN_RPAREN, // 8
     TOKEN_OPENINGBRACKET, // 9

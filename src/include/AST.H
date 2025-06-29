@@ -10,6 +10,7 @@ typedef struct AST_STRUCT
     AST_VARIABLE_DEFINITION,
     AST_VARIABLE,
     AST_STRING,
+    AST_REAL,
     AST_COMPOUND,
     AST_PROGRAMA,
     AST_INICIO
@@ -29,6 +30,9 @@ typedef struct AST_STRUCT
 
   /* AST_STRING */
   char* string_value;
+
+  /* AST_REAL */
+  char* real_value;
 
   /* AST_COMPOUND */
   struct AST_STRUCT** compound_value;
