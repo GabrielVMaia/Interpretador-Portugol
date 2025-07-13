@@ -30,7 +30,7 @@ AST_T* parser_parse_real(parser_T* parser)
 
 AST_T* parser_parse_variable_definition(parser_T* parser)
 { 
-  printf("[parser_parse_variable_definition] iniciando");
+  printf("[parser_parse_variable_definition] iniciando\n");
   // tipo nome = valor 
   // inteiro numero = 10
 
@@ -44,6 +44,8 @@ AST_T* parser_parse_variable_definition(parser_T* parser)
 
   // come o "="
   parser_eat(parser, TOKEN_EQUALS);
+
+  printf("[parser_parse_variable_definition] parseand o valor -> %s\n", &parser->current_token->type);
 
   // parsea o valor 
   AST_T* variable_value = parser_parse_expr(parser);
@@ -225,7 +227,8 @@ AST_T* parser_parse_expr(parser_T* parser)
     case TOKEN_REAL: return parser_parse_real(parser);
   }
 
-  printf("Erro: expressão inesperada `%s`\n", parser->current_token->value);
+  printf("[parser_parse_expr] Erro: expressão inesperada `%s`\n", parser->current_token->value);
+  printf("[Detalhes]")
   exit(1);
 }
 
